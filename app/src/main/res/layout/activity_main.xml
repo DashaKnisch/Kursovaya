@@ -1,51 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-    
+    android:background="#ECE9DF">
+
     <LinearLayout
         android:id="@+id/loginLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:orientation="vertical"
-        android:padding="24dp"
+        android:padding="32dp"
         android:gravity="center_horizontal">
+
+        <!-- Заголовок -->
+        <TextView
+            android:id="@+id/loginTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Войдите в систему:"
+            android:textColor="#083508"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp" />
 
         <EditText
             android:id="@+id/editLogin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Логин" />
+            android:layout_height="50dp"
+            android:hint="Логин"
+            android:background="#80FFFFFF"
+            android:textColor="#000000"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"
+            android:textSize="16sp"
+            android:elevation="4dp" />
 
         <EditText
             android:id="@+id/editPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:hint="Пароль"
             android:inputType="textPassword"
-            android:layout_marginTop="8dp" />
+            android:background="#80FFFFFF"
+            android:textColor="#000000"
+            android:padding="12dp"
+            android:textSize="16sp"
+            android:elevation="4dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
             android:text="Войти"
-            android:layout_marginTop="12dp" />
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginTop="20dp"
+            android:elevation="6dp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="#F5C85C" />
+
     </LinearLayout>
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/loginLayout" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:visibility="gone"
         app:menu="@menu/bottom_nav_menu" />
-</LinearLayout>
+</RelativeLayout>
