@@ -1,0 +1,66 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Поля для добавления -->
+    <EditText
+        android:id="@+id/etMovieName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Название фильма" />
+
+    <EditText
+        android:id="@+id/etDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Дата (например, 2025-05-20)" />
+
+    <EditText
+        android:id="@+id/etTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Время (например, 18:30)" />
+
+    <EditText
+        android:id="@+id/etHallNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Номер зала"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/btnAddSession"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Добавить сеанс" />
+
+    <Button
+        android:id="@+id/btnShowSessions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Показать все сеансы" />
+
+    <!-- Новое поле для удаления -->
+    <EditText
+        android:id="@+id/etDeleteSessionId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ID сеанса для удаления"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/btnDeleteSession"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Удалить сеанс" />
+
+    <TextView
+        android:id="@+id/tvSessionsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:paddingTop="16dp" />
+</LinearLayout>
