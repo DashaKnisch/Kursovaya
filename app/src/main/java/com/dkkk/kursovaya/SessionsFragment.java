@@ -24,6 +24,7 @@ public class SessionsFragment extends Fragment {
     private EditText etDeleteSessionId;
 
     private SessionDatabaseHelper dbHelper;
+    private boolean isSessionsVisible = false;
 
     @Nullable
     @Override
@@ -44,6 +45,7 @@ public class SessionsFragment extends Fragment {
         btnDeleteSession = view.findViewById(R.id.btnDeleteSession);
 
         tvSessionsList = view.findViewById(R.id.tvSessionsList);
+        tvSessionsList.setVisibility(View.GONE); // по умолчанию скрыт
 
         dbHelper = new SessionDatabaseHelper(requireContext());
 
@@ -59,19 +61,16 @@ public class SessionsFragment extends Fragment {
                 return;
             }
 
-            // Проверяем, что дата содержит только цифры, точки и дефисы
             if (!date.matches("[0-9.-]+")) {
                 Toast.makeText(getContext(), "Дата должна содержать только цифры, точки и дефисы", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Проверяем, что время содержит только цифры и двоеточие
             if (!time.matches("[0-9:]+")) {
                 Toast.makeText(getContext(), "Время должно содержать только цифры и двоеточие", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Проверка номера зала
             int hallNumber;
             try {
                 hallNumber = Integer.parseInt(hallStr);
@@ -81,8 +80,8 @@ public class SessionsFragment extends Fragment {
             }
 
             Session session = new Session(0, movieName, date, time, hallNumber);
-
             boolean inserted = dbHelper.addSession(session);
+
             if (inserted) {
                 Toast.makeText(getContext(), "Сеанс добавлен", Toast.LENGTH_SHORT).show();
                 etMovieName.setText("");
@@ -94,24 +93,31 @@ public class SessionsFragment extends Fragment {
             }
         });
 
-
-
         btnShowSessions.setOnClickListener(v -> {
-            ArrayList<Session> sessions = dbHelper.getAllSessions();
-            if (sessions.isEmpty()) {
-                tvSessionsList.setText("Сеансы не найдены");
-                return;
+            if (!isSessionsVisible) {
+                ArrayList<Session> sessions = dbHelper.getAllSessions();
+                if (sessions.isEmpty()) {
+                    tvSessionsList.setText("Сеансы не найдены");
+                } else {
+                    StringBuilder builder = new StringBuilder();
+                    for (Session s : sessions) {
+                        builder.append("ID: ").append(s.getId())
+                                .append(", Фильм: ").append(s.getMovieName())
+                                .append(", Дата: ").append(s.getSessionDate())
+                                .append(", Время: ").append(s.getSessionTime())
+                                .append(", Зал: ").append(s.getHallNumber())
+                                .append("\n");
+                    }
+                    tvSessionsList.setText(builder.toString());
+                }
+                tvSessionsList.setVisibility(View.VISIBLE);
+                btnShowSessions.setText("Скрыть");
+                isSessionsVisible = true;
+            } else {
+                tvSessionsList.setVisibility(View.GONE);
+                btnShowSessions.setText("Показать все сеансы");
+                isSessionsVisible = false;
             }
-            StringBuilder builder = new StringBuilder();
-            for (Session s : sessions) {
-                builder.append("ID: ").append(s.getId())  // Показываем ID
-                        .append(", Фильм: ").append(s.getMovieName())
-                        .append(", Дата: ").append(s.getSessionDate())
-                        .append(", Время: ").append(s.getSessionTime())
-                        .append(", Зал: ").append(s.getHallNumber())
-                        .append("\n");
-            }
-            tvSessionsList.setText(builder.toString());
         });
 
         btnDeleteSession.setOnClickListener(v -> {

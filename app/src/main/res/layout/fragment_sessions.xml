@@ -1,66 +1,116 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="16dp"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ECE9DF">
 
-    <!-- Поля для добавления -->
-    <EditText
-        android:id="@+id/etMovieName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Название фильма" />
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:gravity="center_horizontal">
 
-    <EditText
-        android:id="@+id/etDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Дата (например, 2025-05-20)" />
+        <!-- Заголовок -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Управление сеансами:"
+            android:textColor="#083508"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp" />
 
-    <EditText
-        android:id="@+id/etTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Время (например, 18:30)" />
+        <!-- Поля для добавления -->
+        <EditText
+            android:id="@+id/etMovieName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Название фильма"
+            android:minHeight="48dp"
+            android:backgroundTint="#B0B9AB"
+            android:layout_marginBottom="16dp" />
 
-    <EditText
-        android:id="@+id/etHallNumber"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Номер зала"
-        android:inputType="number" />
+        <EditText
+            android:id="@+id/etDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Дата (например, 2025-05-20)"
+            android:minHeight="48dp"
+            android:backgroundTint="#B0B9AB"
+            android:layout_marginBottom="16dp" />
 
-    <Button
-        android:id="@+id/btnAddSession"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Добавить сеанс" />
+        <EditText
+            android:id="@+id/etTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Время (например, 18:30)"
+            android:minHeight="48dp"
+            android:backgroundTint="#B0B9AB"
+            android:layout_marginBottom="16dp" />
 
-    <Button
-        android:id="@+id/btnShowSessions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Показать все сеансы" />
+        <EditText
+            android:id="@+id/etHallNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Номер зала"
+            android:inputType="number"
+            android:minHeight="48dp"
+            android:backgroundTint="#B0B9AB"
+            android:layout_marginBottom="24dp" />
 
-    <!-- Новое поле для удаления -->
-    <EditText
-        android:id="@+id/etDeleteSessionId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="ID сеанса для удаления"
-        android:inputType="number" />
+        <!-- Кнопки -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddSession"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Добавить сеанс"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="#F5C85C" />
 
-    <Button
-        android:id="@+id/btnDeleteSession"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Удалить сеанс" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnShowSessions"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Показать все сеансы"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginBottom="24dp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="#F5C85C" />
 
-    <TextView
-        android:id="@+id/tvSessionsList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:paddingTop="16dp" />
-</LinearLayout>
+        <!-- Поле для удаления -->
+        <EditText
+            android:id="@+id/etDeleteSessionId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="ID сеанса для удаления"
+            android:inputType="number"
+            android:minHeight="48dp"
+            android:backgroundTint="#B0B9AB"
+            android:layout_marginBottom="16dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDeleteSession"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Удалить сеанс"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="#F5C85C" />
+
+        <!-- Вывод списка -->
+        <TextView
+            android:id="@+id/tvSessionsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="24dp"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+    </LinearLayout>
+</ScrollView>

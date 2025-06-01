@@ -5,4 +5,8 @@
     <color name="field_text">#000000</color>
     <color name="button_color">#8A5910</color>
     <color name="button_text">#000000</color>
+    <color name="nav_selected">#F5C85C</color>
+    <color name="nav_unselected">#555555</color>
+    <color name="nav_selected_bg">#33F5C85C</color>
+    <color name="ripple_yellow">#F5C85C</color>
 </resources>
