@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "742615753190",
+    "project_id": "kyrsovaya-8e6cf",
+    "storage_bucket": "kyrsovaya-8e6cf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742615753190:android:eed85143c78eb053cef627",
+        "android_client_info": {
+          "package_name": "com.dkkk.kursovaya"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPKLicWA1zdMV4iiYavfvGSGVD7yOZA64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

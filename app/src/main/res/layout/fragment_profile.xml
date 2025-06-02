@@ -47,7 +47,31 @@
             app:cornerRadius="16dp"
             app:backgroundTint="#F5C85C" />
 
+        <!-- Кнопка: Добавить админа -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddAdmin"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Добавить админа"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:elevation="6dp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="#F5C85C"
+            android:layout_marginTop="16dp" />
 
+        <!-- Кнопка: Удалить админа -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDeleteAdmin"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Удалить админа"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:elevation="6dp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="#F5C85C"
+            android:layout_marginTop="16dp" />
 
     </LinearLayout>
 </RelativeLayout>

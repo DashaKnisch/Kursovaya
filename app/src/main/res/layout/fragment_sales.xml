@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_sales"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ECE9DF"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:id="@+id/salesLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="#FFFFFF"
+        android:elevation="6dp"
+        android:clipToPadding="false"
+        android:layout_margin="16dp"
+        android:gravity="center_horizontal"
+        android:scrollbars="vertical">
+
+        <Button
+            android:id="@+id/loadButton"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Запросить статистику"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:backgroundTint="#F5C85C"
+            android:elevation="8dp"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="sans-serif-medium" />
+
+        <TextView
+            android:id="@+id/salesTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#083508"
+            android:textSize="18sp"
+            android:lineSpacingExtra="6dp"
+            android:padding="12dp"
+            android:background="#FFF9E5"
+            android:elevation="4dp"
+            android:scrollbars="vertical" />
+
+    </LinearLayout>
+
+</RelativeLayout>
