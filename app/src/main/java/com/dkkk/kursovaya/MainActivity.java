@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_sessions) selected = new SessionsFragment();
             else if (item.getItemId() == R.id.nav_profile) selected = new ProfileFragment();
             else if (item.getItemId() == R.id.nav_sales) selected = new SalesFragment();
+            else if (item.getItemId() == R.id.nav_review) selected = new ReviewFragment();
             if (selected != null)
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selected).commit();
             return true;
