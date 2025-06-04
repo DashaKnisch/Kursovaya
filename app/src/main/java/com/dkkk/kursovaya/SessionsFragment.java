@@ -58,14 +58,12 @@ public class SessionsFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
 
-        // Адаптер и список фильмов
         movieAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_list_item_1, movieDisplayList);
         listViewMovies.setAdapter(movieAdapter);
 
         loadMoviesFromFirestore();
 
-        // При нажатии на фильм — вставляем всё в одно поле
         listViewMovies.setOnItemClickListener((parent, view1, position, id) -> {
             String movieInfo = movieDisplayList.get(position);
             editMovieName.setText(movieInfo);

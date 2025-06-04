@@ -15,6 +15,16 @@
         android:paddingBottom="0dp"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Редактирование сеансов:"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"/>
+
         <AutoCompleteTextView
             android:id="@+id/editMovieName"
             android:hint="Выберите фильм"

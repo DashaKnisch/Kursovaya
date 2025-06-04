@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/buttonDay"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:text="01.01"
+    android:textSize="14sp"
+    android:textColor="#083508"
+    android:backgroundTint="#FFF9E5"
+    app:strokeColor="#F5C85C"
+    app:strokeWidth="2dp"
+    app:cornerRadius="12dp"
+    android:layout_margin="4dp"
+    />
