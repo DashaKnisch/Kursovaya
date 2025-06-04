@@ -1,147 +1,64 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollViewSessions"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="#ECE9DF"
-    android:paddingBottom="56dp">
+    android:background="@color/background_color"
+    android:padding="16dp">
 
     <LinearLayout
-        android:id="@+id/layoutSessionsByDay"
+        android:id="@+id/week_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="32dp"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btn_prev_week"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:backgroundTint="#F5C85C"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:text="←" />
+
+        <TextView
+            android:id="@+id/week_range"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingBottom="16dp">
+            android:text="Неделя"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="@color/field_text" />
 
-            <ImageButton
-                android:id="@+id/buttonPrevWeek"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@android:color/transparent"
-                android:src="@android:drawable/ic_media_previous"
-                android:contentDescription="Предыдущая неделя" />
-
-            <TextView
-                android:id="@+id/textCurrentWeek"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Неделя"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
-
-            <ImageButton
-                android:id="@+id/buttonNextWeek"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@android:color/transparent"
-                android:src="@android:drawable/ic_media_next"
-                android:contentDescription="Следующая неделя" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layoutDaysContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="7"
-            android:layout_marginBottom="24dp">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonDay0"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:text="01.01"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                app:cornerRadius="12dp"
-                app:backgroundTint="#F5C85C" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonDay1"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:text="02.01"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                app:cornerRadius="12dp"
-                app:backgroundTint="#F5C85C" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonDay2"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:text="03.01"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                app:cornerRadius="12dp"
-                app:backgroundTint="#F5C85C" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonDay3"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:text="04.01"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                app:cornerRadius="12dp"
-                app:backgroundTint="#F5C85C" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonDay4"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:text="05.01"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                app:cornerRadius="12dp"
-                app:backgroundTint="#F5C85C" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonDay5"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:text="06.01"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                app:cornerRadius="12dp"
-                app:backgroundTint="#F5C85C" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonDay6"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:text="07.01"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                app:cornerRadius="12dp"
-                app:backgroundTint="#F5C85C" />
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewSessions"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:background="#FFF9E5"
-            android:elevation="4dp"
-            android:padding="8dp" />
-
+        <Button
+            android:id="@+id/btn_next_week"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:backgroundTint="#F5C85C"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:text="→" />
     </LinearLayout>
-</ScrollView>
+
+    <LinearLayout
+        android:id="@+id/days_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:weightSum="7" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/sessions_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+</LinearLayout>

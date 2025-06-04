@@ -100,20 +100,32 @@ public class SessionsFragment extends Fragment {
 
     private void addSession() {
         String movieName = editMovieName.getText().toString().trim();
-        String date = editSessionDate.getText().toString().trim();
+        String dateStr = editSessionDate.getText().toString().trim();
         String time = editSessionTime.getText().toString().trim();
         String hall = editHallNumber.getText().toString().trim();
         String price = editTicketPrice.getText().toString().trim();
         String sessionId = editSessionId.getText().toString().trim();
 
-        if (movieName.isEmpty() || date.isEmpty() || time.isEmpty() || hall.isEmpty() || price.isEmpty() || sessionId.isEmpty()) {
+        if (movieName.isEmpty() || dateStr.isEmpty() || time.isEmpty() || hall.isEmpty() || price.isEmpty() || sessionId.isEmpty()) {
             Toast.makeText(getContext(), "Заполните все поля", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Преобразуем дату из строки в Timestamp
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date parsedDate;
+        try {
+            parsedDate = sdf.parse(dateStr);
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Неверный формат даты. Используйте yyyy-MM-dd", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        com.google.firebase.Timestamp timestampDate = new com.google.firebase.Timestamp(parsedDate);
+
         Map<String, Object> sessionData = new HashMap<>();
         sessionData.put("movieName", movieName);
-        sessionData.put("date", date);
+        sessionData.put("date", timestampDate);
         sessionData.put("time", time);
         sessionData.put("hall", hall);
         sessionData.put("price", price);
@@ -124,6 +136,7 @@ public class SessionsFragment extends Fragment {
                 .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Сеанс добавлен", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Ошибка добавления: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
+
 
     private void deleteSession() {
         String sessionId = editSessionId.getText().toString().trim();

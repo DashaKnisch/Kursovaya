@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="WeekNavButton" parent="Widget.AppCompat.Button">
+        <item name="android:backgroundTint">#F5C85C</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
+    <!-- Стиль для кнопок дней с обводкой -->
+    <style name="DayButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">#F5C85C</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <!-- Стиль для выбранной кнопки дня -->
+    <style name="SelectedDayButton" parent="DayButtonStyle">
+        <item name="android:background">#F5C85C</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+
+</resources>

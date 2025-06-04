@@ -12,14 +12,15 @@
         android:title="Сеансы" />
 
     <item
+        android:id="@+id/nav_review"
+        android:title="Календарь"
+        android:icon="@drawable/baseline_add_alert_24" />
+
+    <item
         android:id="@+id/nav_sales"
         android:icon="@android:drawable/ic_menu_share"
         android:title="Продажи" />
 
-    <item
-        android:id="@+id/nav_review"
-        android:title="Отзывы"
-        android:icon="@drawable/baseline_add_alert_24" />
 
     <item
         android:id="@+id/nav_profile"

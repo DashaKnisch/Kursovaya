@@ -1,208 +1,193 @@
 package com.dkkk.kursovaya;
 
-import android.annotation.SuppressLint;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import androidx.core.content.ContextCompat;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
+import com.google.firebase.firestore.Query;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Locale;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SessionsByDateFragment extends Fragment {
 
-    private RecyclerView recyclerViewSessions;
-    private SessionsAdapter sessionsAdapter;
-    private FirebaseFirestore db;
-    private ArrayList<HashMap<String, String>> sessionsList = new ArrayList<>();
-    private ArrayList<Button> dayButtons = new ArrayList<>();
-    private String selectedDate = "";
-    private Calendar currentWeekStart = Calendar.getInstance();
-    private TextView textCurrentWeek;
+    private Calendar currentWeekStart;
+    private TextView weekRangeText;
+    private LinearLayout daysContainer;
+    private LinearLayout sessionsContainer;
+    private Button selectedDayButton = null;
+    private final SimpleDateFormat dayLabelFormat = new SimpleDateFormat("EE dd", new Locale("ru"));
+    private final SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    @SuppressLint("MissingInflatedId")
+    public SessionsByDateFragment() {}
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sessions_by_date, container, false);
 
-        db = FirebaseFirestore.getInstance();
+        weekRangeText = view.findViewById(R.id.week_range);
+        daysContainer = view.findViewById(R.id.days_container);
+        sessionsContainer = view.findViewById(R.id.sessions_container);
+        Button btnPrev = view.findViewById(R.id.btn_prev_week);
+        Button btnNext = view.findViewById(R.id.btn_next_week);
 
-        recyclerViewSessions = view.findViewById(R.id.recyclerViewSessions);
-        recyclerViewSessions.setLayoutManager(new LinearLayoutManager(getContext()));
-        sessionsAdapter = new SessionsAdapter(sessionsList);
-        recyclerViewSessions.setAdapter(sessionsAdapter);
+        currentWeekStart = getWeekStart(Calendar.getInstance());
 
-        textCurrentWeek = view.findViewById(R.id.textCurrentWeek);
-
-        // Найдем кнопки дней по id и положим в список
-        dayButtons.add(view.findViewById(R.id.buttonDay0));
-        dayButtons.add(view.findViewById(R.id.buttonDay1));
-        dayButtons.add(view.findViewById(R.id.buttonDay2));
-        dayButtons.add(view.findViewById(R.id.buttonDay3));
-        dayButtons.add(view.findViewById(R.id.buttonDay4));
-        dayButtons.add(view.findViewById(R.id.buttonDay5));
-        dayButtons.add(view.findViewById(R.id.buttonDay6));
-
-        // Кнопки переключения недели
-        ImageButton btnPrevWeek = view.findViewById(R.id.buttonPrevWeek);
-        ImageButton btnNextWeek = view.findViewById(R.id.buttonNextWeek);
-
-        // Устанавливаем старт недели - понедельник
-        setCurrentWeekStartToMonday();
-
-        // Заполняем кнопки датами недели
-        updateWeekDays();
-
-        // Навесим обработчики на кнопки дней
-        for (int i = 0; i < dayButtons.size(); i++) {
-            final int index = i;
-            dayButtons.get(i).setOnClickListener(v -> {
-                selectedDate = dayButtons.get(index).getText().toString();
-                highlightSelectedDay(index);
-                loadSessionsForDate(selectedDate);
-            });
-        }
-
-        // Обработчики переключения недели
-        btnPrevWeek.setOnClickListener(v -> {
-            currentWeekStart.add(Calendar.DAY_OF_MONTH, -7);
-            updateWeekDays();
-            selectedDate = dayButtons.get(0).getText().toString();
-            highlightSelectedDay(0);
-            loadSessionsForDate(selectedDate);
+        btnPrev.setOnClickListener(v -> {
+            currentWeekStart.add(Calendar.WEEK_OF_YEAR, -1);
+            updateWeekView();
         });
 
-        btnNextWeek.setOnClickListener(v -> {
-            currentWeekStart.add(Calendar.DAY_OF_MONTH, 7);
-            updateWeekDays();
-            selectedDate = dayButtons.get(0).getText().toString();
-            highlightSelectedDay(0);
-            loadSessionsForDate(selectedDate);
+        btnNext.setOnClickListener(v -> {
+            currentWeekStart.add(Calendar.WEEK_OF_YEAR, 1);
+            updateWeekView();
         });
 
-        // Изначально выделяем первый день и загружаем данные
-        selectedDate = dayButtons.get(0).getText().toString();
-        highlightSelectedDay(0);
-        loadSessionsForDate(selectedDate);
+        updateWeekView();
 
         return view;
     }
 
-    private void setCurrentWeekStartToMonday() {
-        currentWeekStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        currentWeekStart.set(Calendar.HOUR_OF_DAY, 0);
-        currentWeekStart.set(Calendar.MINUTE, 0);
-        currentWeekStart.set(Calendar.SECOND, 0);
-        currentWeekStart.set(Calendar.MILLISECOND, 0);
+    private Calendar getWeekStart(Calendar date) {
+        Calendar start = (Calendar) date.clone();
+        start.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        return start;
     }
 
-    private void updateWeekDays() {
-        SimpleDateFormat sdf = new SimpleDateFormat("EE dd.MM", new Locale("ru"));
+    private void updateWeekView() {
+        daysContainer.removeAllViews();
 
-        Calendar calendar = (Calendar) currentWeekStart.clone();
+        Calendar day = (Calendar) currentWeekStart.clone();
+        SimpleDateFormat headerFormat = new SimpleDateFormat("dd.MM");
+        Calendar weekEnd = (Calendar) currentWeekStart.clone();
+        weekEnd.add(Calendar.DAY_OF_MONTH, 6);
 
-        for (Button btn : dayButtons) {
-            btn.setText(sdf.format(calendar.getTime()));
-            btn.setBackgroundResource(android.R.drawable.btn_default); // сброс фона, чтобы убрать выделение
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
+        String header = "Неделя " + headerFormat.format(day.getTime()) +
+                " - " + headerFormat.format(weekEnd.getTime());
+        weekRangeText.setText(header);
 
-        // Обновляем заголовок недели: например "Неделя с 01.01.2025 по 07.01.2025"
-        String startWeek = dayButtons.get(0).getText().toString();
-        String endWeek = dayButtons.get(dayButtons.size() - 1).getText().toString();
-        textCurrentWeek.setText("Неделя с " + startWeek + " по " + endWeek);
-    }
+        for (int i = 0; i < 7; i++) {
+            Button dayButton = new Button(getContext());
+            dayButton.setText(dayLabelFormat.format(day.getTime()));
+            dayButton.setTextAppearance(requireContext(), R.style.DayButtonStyle);
 
-    private void highlightSelectedDay(int selectedIndex) {
-        for (int i = 0; i < dayButtons.size(); i++) {
-            if (i == selectedIndex) {
-                dayButtons.get(i).setBackgroundColor(0xFFDDDDFF); // светло-синий фон для выделения
-            } else {
-                dayButtons.get(i).setBackgroundResource(android.R.drawable.btn_default);
+            Calendar selectedDay = (Calendar) day.clone();
+
+            dayButton.setOnClickListener(v -> {
+                if (selectedDayButton != null) {
+                    selectedDayButton.setTextAppearance(requireContext(), R.style.DayButtonStyle);
+                }
+                selectedDayButton = dayButton;
+                dayButton.setTextAppearance(requireContext(), R.style.SelectedDayButton);
+                loadSessionsForDate(selectedDay);
+            });
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+            params.setMargins(4, 0, 4, 0);
+            dayButton.setLayoutParams(params);
+
+            daysContainer.addView(dayButton);
+
+            // Автовыбор понедельника при загрузке
+            if (i == 0 && selectedDayButton == null) {
+                dayButton.performClick();
             }
+
+            day.add(Calendar.DAY_OF_MONTH, 1);
         }
     }
 
-    private void loadSessionsForDate(String date) {
+    private void loadSessionsForDate(Calendar date) {
+        sessionsContainer.removeAllViews();
+
+        // Начало дня (00:00:00)
+        Calendar start = (Calendar) date.clone();
+        start.set(Calendar.HOUR_OF_DAY, 0);
+        start.set(Calendar.MINUTE, 0);
+        start.set(Calendar.SECOND, 0);
+        start.set(Calendar.MILLISECOND, 0);
+
+        // Конец дня — начало следующего дня
+        Calendar end = (Calendar) start.clone();
+        end.add(Calendar.DAY_OF_MONTH, 1);
+
         db.collection("sessions")
-                .whereEqualTo("date", date)
+                .whereGreaterThanOrEqualTo("date", start.getTime())
+                .whereLessThan("date", end.getTime())
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    sessionsList.clear();
+                    List<QueryDocumentSnapshot> sessions = new ArrayList<>();
+
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        HashMap<String, String> session = new HashMap<>();
-                        session.put("id", doc.getId());
-                        session.put("movieName", doc.getString("movieName"));
-                        session.put("time", doc.getString("time"));
-                        session.put("hall", doc.getString("hall"));
-                        session.put("price", doc.getString("price"));
-                        sessionsList.add(session);
+                        sessions.add(doc);
                     }
-                    Collections.sort(sessionsList, Comparator.comparing(s -> s.get("time")));
-                    sessionsAdapter.notifyDataSetChanged();
+
+                    // Сортируем по времени
+                    sessions.sort(Comparator.comparing(s -> s.getString("time")));
+
+                    for (QueryDocumentSnapshot doc : sessions) {
+                        String sessionId = doc.getId();
+                        String movieName = doc.getString("movieName");
+                        String time = doc.getString("time");
+                        String hall = doc.getString("hall");
+                        String price = String.valueOf(doc.get("price"));
+
+                        String info = "ID: " + sessionId + "\n" +
+                                movieName + "\n" +
+                                "Время: " + time + "\n" +
+                                "Зал: " + hall + " | Цена: " + price + "₽";
+
+                        TextView sessionView = new TextView(getContext());
+                        sessionView.setText(info);
+                        sessionView.setTextColor(ContextCompat.getColor(requireContext(), R.color.field_text));
+                        sessionView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.field_background));
+                        sessionView.setPadding(24, 24, 24, 24);
+                        sessionView.setTextSize(16);
+
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        params.setMargins(0, 12, 0, 12);
+                        sessionView.setLayoutParams(params);
+
+                        sessionsContainer.addView(sessionView);
+                    }
+
+                    if (sessions.isEmpty()) {
+                        TextView emptyView = new TextView(getContext());
+                        emptyView.setText("Нет сеансов на этот день.");
+                        emptyView.setTextColor(ContextCompat.getColor(requireContext(), R.color.field_hint));
+                        emptyView.setPadding(24, 24, 24, 24);
+                        sessionsContainer.addView(emptyView);
+                    }
                 })
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Ошибка загрузки: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    TextView errorView = new TextView(getContext());
+                    errorView.setText("Ошибка загрузки сеансов.");
+                    errorView.setTextColor(ContextCompat.getColor(requireContext(), R.color.button_color));
+                    sessionsContainer.addView(errorView);
+                });
     }
 
-    // Adapter для сеансов
-    static class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHolder> {
-        private final ArrayList<HashMap<String, String>> data;
 
-        public SessionsAdapter(ArrayList<HashMap<String, String>> data) {
-            this.data = data;
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_session, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            HashMap<String, String> item = data.get(position);
-            holder.sessionId.setText("ID: " + item.get("id"));
-            holder.movieName.setText(item.get("movieName"));
-            holder.time.setText("Время: " + item.get("time"));
-            holder.hall.setText("Зал: " + item.get("hall"));
-            holder.price.setText("Цена: " + item.get("price") + " ₽");
-        }
-
-        @Override
-        public int getItemCount() {
-            return data.size();
-        }
-
-        static class ViewHolder extends RecyclerView.ViewHolder {
-            TextView movieName, time, hall, price, sessionId;
-
-            public ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                movieName = itemView.findViewById(R.id.textMovieName);
-                time = itemView.findViewById(R.id.textTime);
-                hall = itemView.findViewById(R.id.textHall);
-                price = itemView.findViewById(R.id.textPrice);
-                sessionId = itemView.findViewById(R.id.textSessionId);
-            }
-        }
-    }
 }
+
+
