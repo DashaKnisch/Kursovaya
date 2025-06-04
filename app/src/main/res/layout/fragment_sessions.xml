@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- В fragment_sessions.xml -->
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -14,16 +15,29 @@
         android:paddingBottom="0dp"
         android:orientation="vertical">
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/editMovieName"
-            android:hint="Название фильма"
+            android:hint="Выберите фильм"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
             android:background="@android:drawable/edit_text"
             android:textSize="16sp"
             android:textColor="#000000"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="12dp"
+            android:inputType="text" />
+
+        <!-- Добавляем ListView под автокомплит -->
+        <ListView
+            android:id="@+id/listViewMovies"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:background="#FFF9E5"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp"
+            android:elevation="4dp"
+            android:padding="8dp"
+            android:layout_marginBottom="24dp" />
 
         <EditText
             android:id="@+id/editSessionDate"
@@ -34,7 +48,8 @@
             android:background="@android:drawable/edit_text"
             android:textSize="16sp"
             android:textColor="#000000"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="12dp"
+            android:inputType="date" />
 
         <EditText
             android:id="@+id/editSessionTime"
@@ -45,7 +60,8 @@
             android:background="@android:drawable/edit_text"
             android:textSize="16sp"
             android:textColor="#000000"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="12dp"
+            android:inputType="time" />
 
         <EditText
             android:id="@+id/editHallNumber"
@@ -56,99 +72,53 @@
             android:background="@android:drawable/edit_text"
             android:textSize="16sp"
             android:textColor="#000000"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="12dp"
+            android:inputType="number" />
 
-        <com.google.android.material.button.MaterialButton
+        <EditText
+            android:id="@+id/editTicketPrice"
+            android:hint="Цена билета"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="12dp"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/editSessionId"
+            android:hint="ID сеанса"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="24dp"
+            android:inputType="text" />
+
+        <Button
             android:id="@+id/buttonAddSession"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
             android:text="Добавить сеанс"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:elevation="6dp"
-            app:cornerRadius="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:backgroundTint="#F5C85C"
-            android:layout_marginBottom="24dp"/>
-
-        <EditText
-            android:id="@+id/editDeleteMovieName"
-            android:hint="Название для удаления"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:background="@android:drawable/edit_text"
-            android:textSize="16sp"
             android:textColor="#000000"
-            android:layout_marginBottom="12dp"/>
-
-        <EditText
-            android:id="@+id/editDeleteDate"
-            android:hint="Дата"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:background="@android:drawable/edit_text"
-            android:textSize="16sp"
-            android:textColor="#000000"
-            android:layout_marginBottom="12dp"/>
-
-        <EditText
-            android:id="@+id/editDeleteTime"
-            android:hint="Время"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:background="@android:drawable/edit_text"
-            android:textSize="16sp"
-            android:textColor="#000000"
-            android:layout_marginBottom="12dp"/>
-
-        <EditText
-            android:id="@+id/editDeleteHall"
-            android:hint="Зал"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:background="@android:drawable/edit_text"
-            android:textSize="16sp"
-            android:textColor="#000000"
-            android:layout_marginBottom="20dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonDeleteSession"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Удалить сеанс"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:elevation="6dp"
-            app:cornerRadius="16dp"
-            app:backgroundTint="#F5C85C"
-            android:layout_marginBottom="24dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonShowSessions"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Показать сеансы"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:elevation="6dp"
-            app:cornerRadius="16dp"
-            app:backgroundTint="#F5C85C"
-            />
-
-        <TextView
-            android:id="@+id/textAllSessions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#083508"
             android:textSize="18sp"
-            android:lineSpacingExtra="6dp"
             android:padding="12dp"
-            android:background="#FFF9E5"
-            android:elevation="4dp"
-            android:layout_marginTop="16dp" />
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/buttonDeleteSession"
+            android:text="Удалить сеанс по ID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:backgroundTint="#F5C85C"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:padding="12dp" />
 
     </LinearLayout>
 </ScrollView>

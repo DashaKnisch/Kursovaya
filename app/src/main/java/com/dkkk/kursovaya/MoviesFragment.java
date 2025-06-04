@@ -3,7 +3,6 @@ package com.dkkk.kursovaya;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.*;
@@ -40,7 +39,6 @@ public class MoviesFragment extends Fragment {
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, movieList);
         listViewMovies.setAdapter(adapter);
 
-        // 🔥 Автообновление списка при изменениях в базе
         db.collection("movies")
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null) {

@@ -1,12 +1,14 @@
 package com.dkkk.kursovaya;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,165 +18,125 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SessionsFragment extends Fragment {
 
-    private EditText editMovieName, editSessionDate, editSessionTime, editHallNumber;
-    private EditText editDeleteMovieName, editDeleteDate, editDeleteTime, editDeleteHall;
-    private TextView textAllSessions;
-    private Button buttonAddSession, buttonShowSessions, buttonDeleteSession;
+    private EditText editMovieName;
+    private EditText editSessionDate, editSessionTime, editHallNumber, editTicketPrice, editSessionId;
+    private Button buttonAddSession, buttonDeleteSession;
+    private ListView listViewMovies;
 
     private FirebaseFirestore db;
-    private boolean isShown = false;
 
-    public SessionsFragment() {
-    }
+    // Для списка фильмов
+    private ArrayList<String> movieDisplayList = new ArrayList<>();
+    private ArrayList<String> movieIds = new ArrayList<>();
+    private ArrayAdapter<String> movieAdapter;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sessions, container, false);
 
+        FirebaseApp.initializeApp(requireContext());
 
         editMovieName = view.findViewById(R.id.editMovieName);
         editSessionDate = view.findViewById(R.id.editSessionDate);
         editSessionTime = view.findViewById(R.id.editSessionTime);
         editHallNumber = view.findViewById(R.id.editHallNumber);
-
-        editDeleteMovieName = view.findViewById(R.id.editDeleteMovieName);
-        editDeleteDate = view.findViewById(R.id.editDeleteDate);
-        editDeleteTime = view.findViewById(R.id.editDeleteTime);
-        editDeleteHall = view.findViewById(R.id.editDeleteHall);
-
-        textAllSessions = view.findViewById(R.id.textAllSessions);
+        editTicketPrice = view.findViewById(R.id.editTicketPrice);
+        editSessionId = view.findViewById(R.id.editSessionId);
 
         buttonAddSession = view.findViewById(R.id.buttonAddSession);
-        buttonShowSessions = view.findViewById(R.id.buttonShowSessions);
         buttonDeleteSession = view.findViewById(R.id.buttonDeleteSession);
 
-        FirebaseApp.initializeApp(requireContext());
+        listViewMovies = view.findViewById(R.id.listViewMovies);
+
         db = FirebaseFirestore.getInstance();
 
+        // Адаптер и список фильмов
+        movieAdapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_list_item_1, movieDisplayList);
+        listViewMovies.setAdapter(movieAdapter);
 
-        buttonAddSession.setOnClickListener(v -> {
-            String name = editMovieName.getText().toString().trim();
-            String date = editSessionDate.getText().toString().trim();
-            String time = editSessionTime.getText().toString().trim();
-            String hall = editHallNumber.getText().toString().trim();
+        loadMoviesFromFirestore();
 
-            if (name.isEmpty() || date.isEmpty() || time.isEmpty() || hall.isEmpty()) {
-                Toast.makeText(getContext(), "Заполните все поля", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Map<String, Object> session = new HashMap<>();
-            session.put("movieName", name);
-            session.put("sessionDate", date);
-            session.put("sessionTime", time);
-            session.put("hallNumber", hall);
-
-            db.collection("sessions").add(session)
-                    .addOnSuccessListener(documentReference ->
-                            Toast.makeText(getContext(), "Сеанс добавлен", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e ->
-                            Toast.makeText(getContext(), "Ошибка добавления", Toast.LENGTH_SHORT).show());
+        // При нажатии на фильм — вставляем всё в одно поле
+        listViewMovies.setOnItemClickListener((parent, view1, position, id) -> {
+            String movieInfo = movieDisplayList.get(position);
+            editMovieName.setText(movieInfo);
         });
 
-        buttonDeleteSession.setOnClickListener(v -> {
-            String name = editDeleteMovieName.getText().toString().trim();
-            String date = editDeleteDate.getText().toString().trim();
-            String time = editDeleteTime.getText().toString().trim();
-            String hallStr = editDeleteHall.getText().toString().trim();
-
-            if (name.isEmpty() || date.isEmpty() || time.isEmpty() || hallStr.isEmpty()) {
-                Toast.makeText(getContext(), "Введите название, дату, время и зал", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            db.collection("sessions")
-                    .whereEqualTo("movieName", name)
-                    .whereEqualTo("sessionDate", date)
-                    .whereEqualTo("sessionTime", time)
-                    .get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                        boolean deleted = false;
-                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                            Object hallObj = doc.get("hallNumber");
-                            String hallInDoc = "";
-                            if (hallObj instanceof Long) {
-                                hallInDoc = String.valueOf(hallObj);
-                            } else if (hallObj instanceof String) {
-                                hallInDoc = (String) hallObj;
-                            }
-
-                            if (hallStr.equals(hallInDoc)) {
-                                doc.getReference().delete();
-                                deleted = true;
-                            }
-                        }
-                        if (deleted) {
-                            Toast.makeText(getContext(), "Сеанс удалён", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(), "Сеанс не найден", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(e ->
-                            Toast.makeText(getContext(), "Ошибка удаления: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-        });
-
-
-        // Показать/Скрыть сеансы
-        buttonShowSessions.setOnClickListener(v -> {
-            if (!isShown) {
-                db.collection("sessions").get()
-                        .addOnSuccessListener(queryDocumentSnapshots -> {
-                            StringBuilder builder = new StringBuilder();
-                            for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                                String movieName = doc.getString("movieName");
-                                String sessionDate = doc.getString("sessionDate");
-                                String sessionTime = doc.getString("sessionTime");
-                                Long hallNumber = null;
-
-                                try {
-                                    hallNumber = doc.getLong("hallNumber");
-                                } catch (Exception ignored) {
-                                    String hallStr = doc.getString("hallNumber");
-                                    if (hallStr != null) {
-                                        try {
-                                            hallNumber = Long.parseLong(hallStr);
-                                        } catch (NumberFormatException e) {
-                                            hallNumber = 0L;
-                                        }
-                                    }
-                                }
-
-                                if (movieName == null) movieName = "Без названия";
-                                if (sessionDate == null) sessionDate = "Не указана";
-                                if (sessionTime == null) sessionTime = "Не указано";
-                                if (hallNumber == null) hallNumber = 0L;
-
-                                builder.append("Фильм: ").append(movieName).append("\n")
-                                        .append("Дата: ").append(sessionDate).append("\n")
-                                        .append("Время: ").append(sessionTime).append("\n")
-                                        .append("Зал: №").append(hallNumber).append("\n\n");
-                            }
-                            textAllSessions.setText(builder.toString().trim());
-                            textAllSessions.setVisibility(View.VISIBLE);
-                            buttonShowSessions.setText("Скрыть сеансы");
-                            isShown = true;
-                        })
-                        .addOnFailureListener(e ->
-                                Toast.makeText(getContext(), "Ошибка загрузки: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-            } else {
-                textAllSessions.setText("");
-                textAllSessions.setVisibility(View.GONE);
-                buttonShowSessions.setText("Показать сеансы");
-                isShown = false;
-            }
-        });
+        buttonAddSession.setOnClickListener(v -> addSession());
+        buttonDeleteSession.setOnClickListener(v -> deleteSession());
 
         return view;
+    }
+
+    private void loadMoviesFromFirestore() {
+        db.collection("movies")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    movieDisplayList.clear();
+                    movieIds.clear();
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        String title = doc.getString("title");
+                        String year = doc.getString("year");
+                        String director = doc.getString("director");
+
+                        if (title != null && year != null && director != null) {
+                            String info = "Фильм: " + title + ", Год: " + year + ", Режиссёр: " + director;
+                            movieDisplayList.add(info);
+                            movieIds.add(doc.getId());
+                        }
+                    }
+                    movieAdapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> Toast.makeText(getContext(),
+                        "Ошибка загрузки фильмов: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void addSession() {
+        String movieName = editMovieName.getText().toString().trim();
+        String date = editSessionDate.getText().toString().trim();
+        String time = editSessionTime.getText().toString().trim();
+        String hall = editHallNumber.getText().toString().trim();
+        String price = editTicketPrice.getText().toString().trim();
+        String sessionId = editSessionId.getText().toString().trim();
+
+        if (movieName.isEmpty() || date.isEmpty() || time.isEmpty() || hall.isEmpty() || price.isEmpty() || sessionId.isEmpty()) {
+            Toast.makeText(getContext(), "Заполните все поля", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Map<String, Object> sessionData = new HashMap<>();
+        sessionData.put("movieName", movieName);
+        sessionData.put("date", date);
+        sessionData.put("time", time);
+        sessionData.put("hall", hall);
+        sessionData.put("price", price);
+
+        db.collection("sessions")
+                .document(sessionId)
+                .set(sessionData)
+                .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Сеанс добавлен", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Ошибка добавления: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void deleteSession() {
+        String sessionId = editSessionId.getText().toString().trim();
+        if (sessionId.isEmpty()) {
+            Toast.makeText(getContext(), "Введите ID сеанса для удаления", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        db.collection("sessions")
+                .document(sessionId)
+                .delete()
+                .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Сеанс удалён", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Ошибка удаления: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }
