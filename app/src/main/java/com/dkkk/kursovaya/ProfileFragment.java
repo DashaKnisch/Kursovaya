@@ -149,12 +149,11 @@ public class ProfileFragment extends Fragment {
         builder.show();
     }
 
-    // Класс модели для админа
     public static class Admin {
         public String login;
         public String password;
 
-        public Admin() {} // пустой конструктор для Firestore
+        public Admin() {}
 
         public Admin(String login, String password) {
             this.login = login;

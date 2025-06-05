@@ -31,7 +31,6 @@ public class SessionsFragment extends Fragment {
 
     private FirebaseFirestore db;
 
-    // Для списка фильмов
     private ArrayList<String> movieDisplayList = new ArrayList<>();
     private ArrayList<String> movieIds = new ArrayList<>();
     private ArrayAdapter<String> movieAdapter;

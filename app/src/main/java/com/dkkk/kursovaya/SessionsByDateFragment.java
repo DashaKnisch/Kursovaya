@@ -107,7 +107,6 @@ public class SessionsByDateFragment extends Fragment {
 
             daysContainer.addView(dayButton);
 
-            // Автовыбор понедельника при загрузке
             if (i == 0 && selectedDayButton == null) {
                 dayButton.performClick();
             }
@@ -119,14 +118,12 @@ public class SessionsByDateFragment extends Fragment {
     private void loadSessionsForDate(Calendar date) {
         sessionsContainer.removeAllViews();
 
-        // Начало дня (00:00:00)
         Calendar start = (Calendar) date.clone();
         start.set(Calendar.HOUR_OF_DAY, 0);
         start.set(Calendar.MINUTE, 0);
         start.set(Calendar.SECOND, 0);
         start.set(Calendar.MILLISECOND, 0);
 
-        // Конец дня — начало следующего дня
         Calendar end = (Calendar) start.clone();
         end.add(Calendar.DAY_OF_MONTH, 1);
 
@@ -141,7 +138,6 @@ public class SessionsByDateFragment extends Fragment {
                         sessions.add(doc);
                     }
 
-                    // Сортируем по времени
                     sessions.sort(Comparator.comparing(s -> s.getString("time")));
 
                     for (QueryDocumentSnapshot doc : sessions) {
@@ -187,7 +183,4 @@ public class SessionsByDateFragment extends Fragment {
                 });
     }
 
-
 }
-
-

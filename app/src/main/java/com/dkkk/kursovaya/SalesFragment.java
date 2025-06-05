@@ -44,7 +44,7 @@ public class SalesFragment extends Fragment {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         String movie = document.getString("movieName");
                         Long tickets = document.getLong("tickets");
-                        Double price = document.getDouble("ticketPrice");  // цена за билет из базы
+                        Double price = document.getDouble("ticketPrice");
 
                         if (movie == null) movie = "Нет названия";
                         if (tickets == null) tickets = 0L;
@@ -61,7 +61,6 @@ public class SalesFragment extends Fragment {
                 })
                 .addOnFailureListener(e -> salesTextView.setText("Ошибка: " + e.getMessage()));
     }
-
 
 }
 
